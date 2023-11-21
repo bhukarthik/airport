@@ -1,6 +1,2 @@
-package com.solvd.airport.info;
-
-public abstract class FlightInfo
-{
-    public abstract void FlightType();
+package com.solvd.airport.info;public class FlightInfo {
 }
