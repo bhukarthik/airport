@@ -2,26 +2,26 @@ package com.solvd.airport.info;
 
 public class TravelInfo
 {
-    private String Departure;
-    private String Arrival;
+    private String departure;
+    private String arrival;
     public String getDeparture() {
-        return Departure;
+        return departure;
     }
 
     public void setDeparture(String departure) {
-        this.Departure = departure;
+        this.departure = departure;
     }
 
     public String getArrival() {
-        return Arrival;
+        return arrival;
     }
 
     public void setArrival(String arrival) {
-        this.Arrival = arrival;
+        this.arrival = arrival;
     }
 
     @Override
     public String toString() {
-        return "TravelInfo{"+Departure+" : "+Arrival+"}";
+        return "TravelInfo{"+departure+" : "+arrival+"}";
     }
 }

@@ -4,8 +4,8 @@ import com.solvd.airport.info.SeatInfo;
 
 public class EconomySeat  extends SeatInfo
 {
-    public EconomySeat(String seatRow,int SeatNumber)
+    public EconomySeat(String seatRow,int seatNumber)
     {
-        super(seatRow,SeatNumber);
+        super(seatRow,seatNumber);
     }
 }

@@ -14,7 +14,7 @@ public class FlightDate extends DateInfo {
         return cal.getTime();
     }
 
-    public Date DepatureDate() {
+    public Date depatureDate() {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.HOUR, 1);

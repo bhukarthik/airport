@@ -4,31 +4,31 @@ import com.solvd.airport.info.SeatInfo;
 
 public class BusinessSeat extends SeatInfo
 {
-    private String MealType;
-    private String BeverageType;
+    private String mealType;
+    private String beverageType;
 
     public BusinessSeat(String seatRow, int seatNumber) {
         super(seatRow, seatNumber);
     }
 
     public String getMealType() {
-        return MealType;
+        return mealType;
     }
 
     public void setMealType(String mealType) {
-        this.MealType = mealType;
+        this.mealType = mealType;
     }
 
     public String getBeverageType() {
-        return BeverageType;
+        return beverageType;
     }
 
     public void setBeverageType(String beverageType) {
-        BeverageType = beverageType;
+        this.beverageType = beverageType;
     }
 
     @Override
     public String toString() {
-        return "MealInfo{"+MealType+" : "+BeverageType+"}";
+        return "MealInfo{"+mealType+" : "+beverageType+"}";
     }
 }

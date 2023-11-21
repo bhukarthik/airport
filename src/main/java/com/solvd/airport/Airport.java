@@ -74,13 +74,11 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
         LOGGER.info("Enter the Arrival City");
         String arrCity = myObj1.nextLine();
         travelObj.setArrival(arrCity);
-
         Scanner myObj2= new Scanner(System.in);
         LOGGER.info("Enter the Flight Type (Passenger/PrivateJet)");
         String fightType = myObj2.nextLine();
         LOGGER.debug("The Selected Flight Type is "+fightType);
-        PassengerFlight flightObj = new PassengerFlight();
-        flightObj.FlightType();
+        PassengerFlight flightObj = new PassengerFlight("Test",1);
         if (fightType.equalsIgnoreCase("Passenger"))
         {
                 LOGGER.info("Enter the Flight Name");
@@ -95,10 +93,11 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
                 {
                      if (entry.getValue().equals(fightName))
                      {
-                        flightObj.setFlightName(fightName);
                         int flightNumber = entry.getKey();
-                        LOGGER.info("Your Flight Number "+flightNumber);
+                        new PassengerFlight(fightName, flightNumber);
+                        flightObj.setFlightName(fightName);
                         flightObj.setFlightNumber(flightNumber);
+                        LOGGER.info("Your Flight Number "+flightNumber);
                      }
                 }
                 LOGGER.info("Enter the Seat Type[Economy/Business/First]");
@@ -118,7 +117,7 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
                     LOGGER.info("**** "+ flightDate.currentDate()+ "****");
                     LOGGER.info("First Name :" + passObj.getFirstName() + " Last Name :" + passObj.getLastName() + " Age :" + passObj.getAge() + " Gender :" + passObj.getGender());
                     LOGGER.info("Departure City :" + travelObj.getDeparture() + " Arrival City :" + travelObj.getArrival());
-                    LOGGER.info("Departure Time :" + flightDate.DepatureDate() + "Arrival Time :" + flightDate.arrivalDate());
+                    LOGGER.info("Departure Time :" + flightDate.depatureDate() + "Arrival Time :" + flightDate.arrivalDate());
                     LOGGER.info("Flight Number :" + flightObj.getFlightName() + " Flight Name :" + flightObj.getFlightNumber());
                     LOGGER.info("Terminal Name :" + seatObj.getSeatRow() + " Gate Number :" + seatObj.getSeatNumber());
                     LOGGER.info("************************************************");
@@ -144,7 +143,7 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
                     LOGGER.info("******** Your Boarding Pass *********");
                     LOGGER.info("First Name :" + passObj.getFirstName() + " Last Name :" + passObj.getLastName() + " Age :" + passObj.getAge() + " Gender :" + passObj.getGender());
                     LOGGER.info("Departure City :" + travelObj.getDeparture() + " Arrival City :" + travelObj.getArrival());
-                    LOGGER.info("Departure Time :" + flightDate.DepatureDate() + "Arrival Time :" + flightDate.arrivalDate());
+                    LOGGER.info("Departure Time :" + flightDate.depatureDate() + "Arrival Time :" + flightDate.arrivalDate());
                     LOGGER.info("Flight Number :" + flightObj.getFlightName() + " Flight Name :" + flightObj.getFlightNumber());
                     LOGGER.info("Terminal Name :" + businessSeat.getSeatRow() + " Gate Number :" + businessSeat.getSeatNumber());
                     LOGGER.info("Meal Type :" + businessSeat.getMealType() + " Beverage Type :" + businessSeat.getBeverageType());
@@ -167,10 +166,10 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
                     String bevType = myObj9.nextLine();
                     firstClassSeat.setMealType(mealType);
                     firstClassSeat.setBeverageType(bevType);
-                    LOGGER.info("Enter the Number of Luggage");
-                    int luggageNumber = myObj5.nextInt();
                     try
                     {
+                        LOGGER.info("Enter the Number of Luggage");
+                        int luggageNumber = myObj5.nextInt();
                         if (luggageNumber > MAXLUGGAGE)
                         {
                             throw new LuggageMatchException();
@@ -183,6 +182,11 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
                     catch (LuggageMatchException exception)
                     {
                         LOGGER.error("Luggage should be within 2 count (or) less");
+                        System.exit(0);
+                    }
+                    catch (InputMismatchException exception)
+                    {
+                        LOGGER.error("Incorrect Input (Only Numbers)"+exception);
                         System.exit(0);
                     }
                     LOGGER.info("Enter the Weight (in decimal)");
@@ -203,11 +207,16 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
                         LOGGER.error("Luggage weight is more then required capactiy (or) not within the limits in decimal");
                         System.exit(0);
                     }
+                    catch (InputMismatchException exception)
+                    {
+                        LOGGER.error("Incorrect Input (Only Digits)"+exception);
+                        System.exit(0);
+                    }
 
                     LOGGER.info("******** Your Boarding Pass *********");
                     LOGGER.info("First Name :" + passObj.getFirstName() + " Last Name :" + passObj.getLastName() + " Age :" + passObj.getAge() + " Gender :" + passObj.getGender());
                     LOGGER.info("Departure City :" + travelObj.getDeparture() + " Arrival City :" + travelObj.getArrival());
-                    LOGGER.info("Departure Time :" + flightDate.DepatureDate() + " Arrival Time :" + flightDate.arrivalDate());
+                    LOGGER.info("Departure Time :" + flightDate.depatureDate() + " Arrival Time :" + flightDate.arrivalDate());
                     LOGGER.info("Flight Number :" + flightObj.getFlightName() + " Flight Name :" + flightObj.getFlightNumber());
                     LOGGER.info("Terminal Name :" + firstClassSeat.getSeatRow() + " Gate Number :" + firstClassSeat.getSeatNumber());
                     LOGGER.info("Meal Type :" + firstClassSeat.getMealType() + " Beverage Type :" + firstClassSeat.getBeverageType());
@@ -225,6 +234,7 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
         else
         {
             LOGGER.error("Incorrect Flight Type Selected");
+            System.exit(0);
         }
     }
     public void printArrival()
@@ -254,7 +264,6 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
     public void printBoardingInvoice()
     {
         TravelInfo travelObj=  new TravelInfo();
-        CargoFlight cargoFlight= new CargoFlight();
         Scanner myObj6 = new Scanner(System.in);
         LOGGER.info("Welcome to Regional Airport Cargo Operation");
         Scanner myObj7 = new Scanner(System.in);
@@ -265,14 +274,15 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
         flightMap.put(231,"DHL");
         flightMap.put(525,"FedEX");
         flightMap.put(313,"UPS");
-
+        CargoFlight cargoFlight= new CargoFlight("Test", 1);
         for (Map.Entry<Integer, String> entry : flightMap.entrySet())
         {
             if (entry.getValue().equals(flightName))
             {
-                cargoFlight.setFlightName(flightName);
                 int flightNumber = entry.getKey();
                 LOGGER.info("Your Flight Number " + flightNumber);
+                new CargoFlight(flightName,flightNumber);
+                cargoFlight.setFlightName(flightName);
                 cargoFlight.setFlightNumber(flightNumber);
             }
         }
@@ -305,6 +315,11 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
             LOGGER.error("Weight Should be number/decimals (or) within 12 tons "+exception);
             System.exit(0);
         }
+        catch (InputMismatchException exception)
+        {
+            LOGGER.error("Incorrect Input (Only Digits)"+exception);
+            System.exit(0);
+        }
 
 
         LOGGER.info("******** Your Cargo Boarding Pass *********");
@@ -331,7 +346,8 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
                 passengerIdentity.setId(ids);
                 LOGGER.info("valid ID " + ids);
                 int ticketNumber=0;
-                try {
+                try
+                {
                     LOGGER.info("Enter the 10 Digit Ticket NUmber: ");
                     ticketNumber = myObj8.nextInt();
                     int digit = (int) (Math.log10(ticketNumber)) + 1;
@@ -342,14 +358,17 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
                     else
                     {
                         LOGGER.info("Security Check Completed for " + ids);
-
-
                     }
                 }
-                catch (TicketMatchException exception) {
+                catch (TicketMatchException exception)
+                {
                     LOGGER.error("Ticket Number is not within the applicable limit (or) should be in Digits only" + exception);
                     LOGGER.info("InValid Ticket Number: " + ticketNumber);
                     System.exit(0);
+                }
+                catch (NumberFormatException exception)
+                {
+                    LOGGER.error("Incorrect Input (Only Numbers)"+exception);
                 }
             }
         }

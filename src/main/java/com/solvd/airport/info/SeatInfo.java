@@ -2,33 +2,34 @@ package com.solvd.airport.info;
 
 public abstract class SeatInfo
 {
-    private String SeatRow;
-    private int SeatNumber;
+    private String seatRow;
+    private int seatNumber;
 
     public SeatInfo(String seatRow, int seatNumber)
     {
-        this.SeatRow=seatRow;
-        this.SeatNumber=seatNumber;
+        this.seatRow=seatRow;
+        this.seatNumber=seatNumber;
     }
 
     public String getSeatRow() {
-        return this.SeatRow;
+        return this.seatRow;
     }
 
     public void setSeatRow(String SeatRow) {
-        this.SeatRow = SeatRow;
+        this.seatRow = SeatRow;
     }
 
     public int getSeatNumber() {
-        return SeatNumber;
+        return seatNumber;
     }
 
-    public void setSeatNumber(int seatNumber) {
-        SeatNumber = seatNumber;
+    public void setSeatNumber(int seatNumber)
+    {
+        seatNumber = seatNumber;
     }
 
     @Override
     public String toString() {
-        return "SeatInfo{"+SeatRow+" : "+SeatNumber+"}";
+        return "SeatInfo{"+seatRow+" : "+seatNumber+"}";
     }
 }

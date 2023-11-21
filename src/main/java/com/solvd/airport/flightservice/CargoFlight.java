@@ -4,11 +4,14 @@ import com.solvd.airport.info.FlightInfo;
 
 public class CargoFlight extends FlightInfo
 {
-    private String FlightName;
-    private int FlightNumber;
     private String cargoType;
     private String supplierName;
     private double weight;
+
+    public CargoFlight(String flightName, int flightNumber) {
+        super(flightName, flightNumber);
+    }
+
     public String getCargoType() {
         return cargoType;
     }
@@ -29,26 +32,5 @@ public class CargoFlight extends FlightInfo
 
     public void setWeight(double weight) {
         this.weight = weight;
-    }
-    public String getFlightName() {
-        return FlightName;
-    }
-
-    public void setFlightName(String flightName) {
-        FlightName = flightName;
-    }
-
-    public int getFlightNumber() {
-        return FlightNumber;
-    }
-
-    public void setFlightNumber(int flightNumber) {
-        FlightNumber = flightNumber;
-    }
-    @Override
-    public void FlightType()
-    {
-        final String flight;
-        flight = "Cargo";
     }
 }

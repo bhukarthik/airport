@@ -4,8 +4,8 @@ import com.solvd.airport.info.SeatInfo;
 
 public class FirstClassSeat extends SeatInfo
 {
-    private String MealType;
-    private String BeverageType;
+    private String mealType;
+    private String beverageType;
     private int NoOfLuggages;
     private double Weight;
     public FirstClassSeat(String seatRow, int seatNumber)
@@ -14,19 +14,19 @@ public class FirstClassSeat extends SeatInfo
     }
 
     public String getMealType() {
-        return MealType;
+        return mealType;
     }
 
     public void setMealType(String mealType) {
-        this.MealType = mealType;
+        this.mealType = mealType;
     }
 
     public String getBeverageType() {
-        return BeverageType;
+        return beverageType;
     }
 
     public void setBeverageType(String beverageType) {
-        BeverageType = beverageType;
+        this.beverageType = beverageType;
     }
     public int getNoOfLuggages() {
         return NoOfLuggages;
