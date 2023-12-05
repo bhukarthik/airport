@@ -2,8 +2,19 @@ package com.solvd.airport.info;
 
 public class GateInfo
 {
-    private String terminalName;
+
+
+    public String terminalName;
     private int gateNumber;
+    public GateInfo(String terminalName, int gateNumber)
+    {
+        this.terminalName = terminalName;
+        this.gateNumber = gateNumber;
+    }
+    public GateInfo()
+    {
+
+    }
     public String getTerminalName()
     {
         return terminalName;

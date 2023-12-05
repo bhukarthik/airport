@@ -3,7 +3,7 @@ package com.solvd.airport.info;
 public class TravelInfo
 {
     private String departure;
-    private String arrival;
+    private DestinationInfo destinationInfo;
     public String getDeparture() {
         return departure;
     }
@@ -12,16 +12,17 @@ public class TravelInfo
         this.departure = departure;
     }
 
-    public String getArrival() {
-        return arrival;
+    public DestinationInfo getArrival() {
+        return destinationInfo;
     }
 
-    public void setArrival(String arrival) {
-        this.arrival = arrival;
+    public void setDestinationInfo(DestinationInfo arrival)
+    {
+        this.destinationInfo = arrival;
     }
 
     @Override
     public String toString() {
-        return "TravelInfo{"+departure+" : "+arrival+"}";
+        return "TravelInfo{"+departure+" : "+destinationInfo+"}";
     }
 }

@@ -12,6 +12,10 @@ public class PassengerFlight extends FlightInfo
         super(flightName, flightNumber);
     }
 
+    public PassengerFlight(String fightName, String s) {
+        super();
+    }
+
     public String getSeatType() {
         return seatType;
     }

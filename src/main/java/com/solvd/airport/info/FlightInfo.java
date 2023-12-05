@@ -11,6 +11,11 @@ public abstract class FlightInfo
         this.flightName = flightName;
         this.flightNumber = flightNumber;
     }
+
+    public FlightInfo() {
+
+    }
+
     public String getFlightName() {
         return flightName;
     }

@@ -12,6 +12,9 @@ public class CargoFlight extends FlightInfo
         super(flightName, flightNumber);
     }
 
+    public CargoFlight(String flightName, String s) {
+    }
+
     public String getCargoType() {
         return cargoType;
     }

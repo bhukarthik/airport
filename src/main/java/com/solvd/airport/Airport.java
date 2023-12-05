@@ -7,10 +7,12 @@ import com.solvd.airport.flightservice.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 
-import java.util.HashMap;
-import java.util.InputMismatchException;
-import java.util.Map;
-import java.util.Scanner;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.stream.Stream;
 
 
 public class Airport implements InformationBoard,Cargo,SecurityChecking,ImmigrationChecking
@@ -49,12 +51,26 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
                 break;
         }
     }
-    public void checkOperations() {
+    public void checkOperations()
+    {
         PassInfo passObj = new PassInfo();
         TravelInfo travelObj = new TravelInfo();
         FlightDate flightDate = new FlightDate();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        Date currentDate= cal.getTime();
+        flightDate.currentDate(currentDate);
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR, 1);
+        cal.add(Calendar.MINUTE, 10);
+        Date depatureDate = cal.getTime();
+        flightDate.setDepatureDate(depatureDate);
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR, 3);
+        cal.add(Calendar.MINUTE, 20);
+        Date arrivalDate = cal.getTime();
+        flightDate.setArrivalDate(arrivalDate);
         Scanner myObj = new Scanner(System.in);
-
         LOGGER.info("Enter the Passenger First Name");
         String firstName = myObj.nextLine();
         passObj.setFirstName(firstName);
@@ -67,164 +83,175 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
         LOGGER.info("Enter the Passenger Age");
         int age = myObj.nextInt();
         passObj.setAge(age);
-
         Scanner myObj1 = new Scanner(System.in);
         LOGGER.info("Your Departure City (JFK)");
         travelObj.setDeparture(depCity);
-        LOGGER.info("Enter the Arrival City");
-        String arrCity = myObj1.nextLine();
-        travelObj.setArrival(arrCity);
+        try
+        {
+            LOGGER.info("Enter the Arrival City (RDU/LHR/DBX/LAX/SLC/MCO/IAD/SFO/SEA) ");
+            String arrCity = myObj1.nextLine();
+            travelObj.setDestinationInfo(DestinationInfo.valueOf(arrCity));
+        } catch (IllegalArgumentException e)
+        {
+            LOGGER.error("Your Arrival City Selected is Unavailable "+e);
+            System.exit(0);
+        }
         Scanner myObj2= new Scanner(System.in);
         LOGGER.info("Enter the Flight Type (Passenger/PrivateJet)");
         String fightType = myObj2.nextLine();
         LOGGER.debug("The Selected Flight Type is "+fightType);
         PassengerFlight flightObj = new PassengerFlight("Test",1);
-        if (fightType.equalsIgnoreCase("Passenger"))
-        {
-                LOGGER.info("Enter the Flight Name");
-                LOGGER.info("American Airline (AA) / United Airlines (UA) / Delta (DL) / South West (SW)");
-                String fightName = myObj2.nextLine();
-                HashMap <Integer, String> flightMap=  new HashMap<Integer, String> ();
-                flightMap.put(1412,"AA");
-                flightMap.put(2103,"UA");
-                flightMap.put(4313,"DL");
-                flightMap.put(7273,"SW");
-                for (Map.Entry<Integer, String> entry : flightMap.entrySet())
-                {
-                     if (entry.getValue().equals(fightName))
-                     {
-                        int flightNumber = entry.getKey();
-                        new PassengerFlight(fightName, flightNumber);
-                        flightObj.setFlightName(fightName);
-                        flightObj.setFlightNumber(flightNumber);
-                        LOGGER.info("Your Flight Number "+flightNumber);
-                     }
+        if (fightType.equalsIgnoreCase("Passenger")) {
+            LOGGER.info("Enter the Flight Name");
+            LOGGER.info("American Airline (AA) / United Airlines (UA) / Delta (DL) / South West (SW)");
+            String fightName = myObj2.nextLine();
+            HashMap<Integer, String> flightMap = new HashMap<Integer, String>();
+            flightMap.put(1412, "AA");
+            flightMap.put(2103, "UA");
+            flightMap.put(4313, "DL");
+            flightMap.put(7273, "SW");
+            Optional <String> flightNumber = flightMap.entrySet().stream().filter(v -> fightName.equals(v.getValue())).map(e -> String.valueOf(e.getKey())).findFirst();
+            new PassengerFlight(fightName, flightNumber.get());
+            flightObj.setFlightName(fightName);
+            flightObj.setFlightNumber(Integer.parseInt(flightNumber.get()));
+            LOGGER.info("Your Flight Number " + flightNumber.get());
+            GateInfo gateInfo = new GateInfo();
+            int myGateNumber=0;
+            String myTerminalName=null;
+            try
+            {
+                Field gateNumber = gateInfo.getClass().getDeclaredField("gateNumber");
+                Field terminalName = gateInfo.getClass().getDeclaredField("terminalName");
+                gateNumber.setAccessible(true);
+                terminalName.setAccessible(true);
+                gateNumber.set(gateInfo,12);
+                terminalName.set(gateInfo,"A");
+                myTerminalName = (String) terminalName.get(gateInfo);
+                myGateNumber= (Integer) gateNumber.get(gateInfo);
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            LOGGER.info("Enter the Seat Type[Economy/Business/First]");
+            Scanner myObj3 = new Scanner(System.in);
+            String seatType = myObj3.nextLine();
+            if (seatType.equalsIgnoreCase("Economy")) {
+                flightObj.setSeatType(seatType);
+                LOGGER.info("Enter the Seat Row");
+                String seatRow = myObj3.nextLine();
+                LOGGER.info("Enter the Seat Number");
+                int seatNumber = myObj3.nextInt();
+                EconomySeat seatObj = new EconomySeat(seatRow, seatNumber);
+                seatObj.setSeatRow(seatRow);
+                seatObj.setSeatNumber(seatNumber);
+                LOGGER.info("******** Your Boarding Pass *********");
+                LOGGER.info("********" +flightDate.currentDate(new Date())+ "*********");
+                LOGGER.info("First Name :" + passObj.getFirstName() + " Last Name :" + passObj.getLastName() + " Age :" + passObj.getAge() + " Gender :" + passObj.getGender());
+                LOGGER.info("Departure City :" + travelObj.getDeparture() + " Arrival City :" + travelObj.getArrival());
+                LOGGER.info("Departure Time :" + flightDate.getDepatureDate() + "Arrival Time :" + flightDate.getArrivalDate());
+                LOGGER.info("Seat Row :" + seatObj.getSeatRow() + " Seat Number :" + seatObj.getSeatNumber());
+                LOGGER.info("Flight Number :" + flightObj.getFlightName() + " Flight Name :" + flightObj.getFlightNumber());
+                LOGGER.info("Terminal Name :" +myTerminalName+ " Gate Number :" + myGateNumber);
+                LOGGER.info("************************************************");
+            }
+            else if (seatType.equalsIgnoreCase("Business")) {
+                flightObj.setSeatType(seatType);
+                Scanner myObj4 = new Scanner(System.in);
+                LOGGER.info("Enter the Seat Row");
+                String seatRow = myObj4.nextLine();
+                LOGGER.info("Enter the Seat Number");
+                int seatNumber = myObj4.nextInt();
+                LOGGER.info("Enter the Meal Type [Veg/NV/Vegan]");
+                String mealType = myObj3.nextLine();
+                LOGGER.info("Enter the Beverage Type [Hot/Cold]");
+                String bevType = myObj3.nextLine();
+                BusinessSeat businessSeat = new BusinessSeat(seatRow, seatNumber);
+                businessSeat.setMealType(mealType);
+                businessSeat.setBeverageType(bevType);
+                LOGGER.info("******** Your Boarding Pass *********");
+                LOGGER.info("********" +flightDate.currentDate(new Date())+ "*********");
+                LOGGER.info("First Name :" + passObj.getFirstName() + " Last Name :" + passObj.getLastName() + " Age :" + passObj.getAge() + " Gender :" + passObj.getGender());
+                LOGGER.info("Departure City :" + travelObj.getDeparture() + " Arrival City :" + travelObj.getArrival());
+                LOGGER.info("Departure Time :" + flightDate.getDepatureDate() + "Arrival Time :" + flightDate.getArrivalDate());
+                LOGGER.info("Flight Number :" + flightObj.getFlightName() + " Flight Name :" + flightObj.getFlightNumber());
+                LOGGER.info("Seat Row :" + businessSeat.getSeatRow() + " Seat Number :" + businessSeat.getSeatNumber());
+                LOGGER.info("Terminal Name :" +myTerminalName+ " Gate Number :" + myGateNumber);
+                LOGGER.info("Meal Type :" + businessSeat.getMealType() + " Beverage Type :" + businessSeat.getBeverageType());
+                LOGGER.info("************************************************");
+
+            } else if (seatType.equalsIgnoreCase("First")) {
+                flightObj.setSeatType(seatType);
+                Scanner myObj5 = new Scanner(System.in);
+                LOGGER.info("Enter the Seat Row");
+                String seatRow = myObj5.nextLine();
+                LOGGER.info("Enter the Seat Number");
+                int seatNumber = myObj5.nextInt();
+                FirstClassSeat firstClassSeat = new FirstClassSeat(seatRow, seatNumber);
+                Scanner myObj9 = new Scanner(System.in);
+                LOGGER.info("Enter the Meal Type [Veg/NV/Vegan]");
+                String mealType = myObj9.nextLine();
+                LOGGER.info("Enter the Beverage Type [Hot/Cold]");
+                String bevType = myObj9.nextLine();
+                firstClassSeat.setMealType(mealType);
+                firstClassSeat.setBeverageType(bevType);
+                try {
+                    LOGGER.info("Enter the Number of Luggage");
+                    int luggageNumber = myObj5.nextInt();
+                    if (luggageNumber > MAXLUGGAGE) {
+                        throw new LuggageMatchException();
+                    } else {
+                        firstClassSeat.setNoOfLuggages(luggageNumber);
+                    }
+                } catch (LuggageMatchException exception) {
+                    LOGGER.error("Luggage should be within 2 count (or) less");
+                    System.exit(0);
+                } catch (InputMismatchException exception) {
+                    LOGGER.error("Incorrect Input (Only Numbers)" + exception);
+                    System.exit(0);
                 }
-                LOGGER.info("Enter the Seat Type[Economy/Business/First]");
-                Scanner myObj3 = new Scanner(System.in);
-                String seatType = myObj3.nextLine();
-                if (seatType.equalsIgnoreCase("Economy"))
-                {
-                    flightObj.setSeatType(seatType);
-                    LOGGER.info("Enter the Seat Row");
-                    String seatRow = myObj3.nextLine();
-                    LOGGER.info("Enter the Seat Number");
-                    int seatNumber = myObj3.nextInt();
-                    EconomySeat seatObj = new EconomySeat(seatRow, seatNumber);
-                    seatObj.setSeatRow(seatRow);
-                    seatObj.setSeatNumber(seatNumber);
-                    LOGGER.info("******** Your Boarding Pass *********");
-                    LOGGER.info("**** "+ flightDate.currentDate()+ "****");
-                    LOGGER.info("First Name :" + passObj.getFirstName() + " Last Name :" + passObj.getLastName() + " Age :" + passObj.getAge() + " Gender :" + passObj.getGender());
-                    LOGGER.info("Departure City :" + travelObj.getDeparture() + " Arrival City :" + travelObj.getArrival());
-                    LOGGER.info("Departure Time :" + flightDate.depatureDate() + "Arrival Time :" + flightDate.arrivalDate());
-                    LOGGER.info("Flight Number :" + flightObj.getFlightName() + " Flight Name :" + flightObj.getFlightNumber());
-                    LOGGER.info("Terminal Name :" + seatObj.getSeatRow() + " Gate Number :" + seatObj.getSeatNumber());
-                    LOGGER.info("************************************************");
-
+                LOGGER.info("Enter the Weight (in decimal)");
+                double weight = myObj5.nextDouble();
+                try {
+                    if (weight > MAXLUGWEIGHT) {
+                        throw new LugggageWeightException();
+                    } else {
+                        firstClassSeat.setWeight(weight);
+                    }
+                } catch (LugggageWeightException exception) {
+                    LOGGER.error("Luggage weight is more then required capactiy (or) not within the limits in decimal");
+                    System.exit(0);
+                } catch (InputMismatchException exception) {
+                    LOGGER.error("Incorrect Input (Only Digits)" + exception);
+                    System.exit(0);
                 }
-                else if (seatType.equalsIgnoreCase("Business"))
+                LOGGER.info("******** Your Boarding Pass *********");
+                LOGGER.info("********" +flightDate.currentDate(new Date())+ "*********");
+                LOGGER.info("First Name :" + passObj.getFirstName() + " Last Name :" + passObj.getLastName() + " Age :" + passObj.getAge() + " Gender :" + passObj.getGender());
+                LOGGER.info("Departure City :" + travelObj.getDeparture() + " Arrival City :" + travelObj.getArrival());
+                LOGGER.info("Departure Time :" + flightDate.getDepatureDate() + " Arrival Time :" + flightDate.getArrivalDate());
+                LOGGER.info("Flight Number :" + flightObj.getFlightName() + " Flight Name :" + flightObj.getFlightNumber());
+                LOGGER.info("Seat Row :" + firstClassSeat.getSeatRow() + " Seat Number :" + firstClassSeat.getSeatNumber());
+                LOGGER.info("Terminal Name :" +myTerminalName+ " Gate Number :" + myGateNumber);
+                LOGGER.info("Meal Type :" + firstClassSeat.getMealType() + " Beverage Type :" + firstClassSeat.getBeverageType());
+                LOGGER.info("Number of Luggage :" + firstClassSeat.getNoOfLuggages() + " Weight :" + firstClassSeat.getWeight());
+                LOGGER.info("************************************************");
+            }
+            isSecurityCheckCompleted();
+            Immigration immigration = () ->
+            {
+                if (travelObj.getArrival().getCountryOfOrigin().equalsIgnoreCase("USA"))
                 {
-                    flightObj.setSeatType(seatType);
-                    Scanner myObj4 = new Scanner(System.in);
-                    LOGGER.info("Enter the Seat Row");
-                    String seatRow = myObj4.nextLine();
-                    LOGGER.info("Enter the Seat Number");
-                    int seatNumber = myObj4.nextInt();
-                    LOGGER.info("Enter the Meal Type [Veg/NV/Vegan]");
-                    String mealType = myObj3.nextLine();
-                    LOGGER.info("Enter the Beverage Type [Hot/Cold]");
-                    String bevType = myObj3.nextLine();
-                    BusinessSeat businessSeat = new BusinessSeat(seatRow, seatNumber);
-                    businessSeat.setMealType(mealType);
-                    businessSeat.setBeverageType(bevType);
-
-
-                    LOGGER.info("******** Your Boarding Pass *********");
-                    LOGGER.info("First Name :" + passObj.getFirstName() + " Last Name :" + passObj.getLastName() + " Age :" + passObj.getAge() + " Gender :" + passObj.getGender());
-                    LOGGER.info("Departure City :" + travelObj.getDeparture() + " Arrival City :" + travelObj.getArrival());
-                    LOGGER.info("Departure Time :" + flightDate.depatureDate() + "Arrival Time :" + flightDate.arrivalDate());
-                    LOGGER.info("Flight Number :" + flightObj.getFlightName() + " Flight Name :" + flightObj.getFlightNumber());
-                    LOGGER.info("Terminal Name :" + businessSeat.getSeatRow() + " Gate Number :" + businessSeat.getSeatNumber());
-                    LOGGER.info("Meal Type :" + businessSeat.getMealType() + " Beverage Type :" + businessSeat.getBeverageType());
-                    LOGGER.info("************************************************");
-
+                    LOGGER.info("Immigration Not Required! ");
+                    LOGGER.info("Please proceed to gate for Boarding.. ");
+                    LOGGER.info("Have a Safe Journey! ");
                 }
-                else if (seatType.equalsIgnoreCase("First"))
+                else
                 {
-                    flightObj.setSeatType(seatType);
-                    Scanner myObj5 = new Scanner(System.in);
-                    LOGGER.info("Enter the Seat Row");
-                    String seatRow = myObj5.nextLine();
-                    LOGGER.info("Enter the Seat Number");
-                    int seatNumber = myObj5.nextInt();
-                    FirstClassSeat firstClassSeat = new FirstClassSeat(seatRow, seatNumber);
-                    Scanner myObj9 = new Scanner(System.in);
-                    LOGGER.info("Enter the Meal Type [Veg/NV/Vegan]");
-                    String mealType = myObj9.nextLine();
-                    LOGGER.info("Enter the Beverage Type [Hot/Cold]");
-                    String bevType = myObj9.nextLine();
-                    firstClassSeat.setMealType(mealType);
-                    firstClassSeat.setBeverageType(bevType);
-                    try
-                    {
-                        LOGGER.info("Enter the Number of Luggage");
-                        int luggageNumber = myObj5.nextInt();
-                        if (luggageNumber > MAXLUGGAGE)
-                        {
-                            throw new LuggageMatchException();
-                        }
-                        else
-                        {
-                            firstClassSeat.setNoOfLuggages(luggageNumber);
-                        }
-                    }
-                    catch (LuggageMatchException exception)
-                    {
-                        LOGGER.error("Luggage should be within 2 count (or) less");
-                        System.exit(0);
-                    }
-                    catch (InputMismatchException exception)
-                    {
-                        LOGGER.error("Incorrect Input (Only Numbers)"+exception);
-                        System.exit(0);
-                    }
-                    LOGGER.info("Enter the Weight (in decimal)");
-                    double weight = myObj5.nextDouble();
-                    try
-                    {
-                        if (weight > MAXLUGWEIGHT)
-                        {
-                            throw new LugggageWeightException();
-                        }
-                        else
-                        {
-                            firstClassSeat.setWeight(weight);
-                        }
-                    }
-                    catch (LugggageWeightException exception)
-                    {
-                        LOGGER.error("Luggage weight is more then required capactiy (or) not within the limits in decimal");
-                        System.exit(0);
-                    }
-                    catch (InputMismatchException exception)
-                    {
-                        LOGGER.error("Incorrect Input (Only Digits)"+exception);
-                        System.exit(0);
-                    }
-
-                    LOGGER.info("******** Your Boarding Pass *********");
-                    LOGGER.info("First Name :" + passObj.getFirstName() + " Last Name :" + passObj.getLastName() + " Age :" + passObj.getAge() + " Gender :" + passObj.getGender());
-                    LOGGER.info("Departure City :" + travelObj.getDeparture() + " Arrival City :" + travelObj.getArrival());
-                    LOGGER.info("Departure Time :" + flightDate.depatureDate() + " Arrival Time :" + flightDate.arrivalDate());
-                    LOGGER.info("Flight Number :" + flightObj.getFlightName() + " Flight Name :" + flightObj.getFlightNumber());
-                    LOGGER.info("Terminal Name :" + firstClassSeat.getSeatRow() + " Gate Number :" + firstClassSeat.getSeatNumber());
-                    LOGGER.info("Meal Type :" + firstClassSeat.getMealType() + " Beverage Type :" + firstClassSeat.getBeverageType());
-                    LOGGER.info("Number of Luggage :" + firstClassSeat.getNoOfLuggages() + " Weight :" + firstClassSeat.getWeight());
-                    LOGGER.info("************************************************");
+                    isImmigrationCheckCompleted();
                 }
-                isSecurityCheckCompleted();
-                isImmigrationCheckCompleted();
+            };
+            immigration.doImmigration();
         }
         else if (fightType.equalsIgnoreCase("PrivateJet"))
         {
@@ -264,7 +291,6 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
     public void printBoardingInvoice()
     {
         TravelInfo travelObj=  new TravelInfo();
-        Scanner myObj6 = new Scanner(System.in);
         LOGGER.info("Welcome to Regional Airport Cargo Operation");
         Scanner myObj7 = new Scanner(System.in);
         LOGGER.info("Enter the Cargo Flight Name");
@@ -275,22 +301,16 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
         flightMap.put(525,"FedEX");
         flightMap.put(313,"UPS");
         CargoFlight cargoFlight= new CargoFlight("Test", 1);
-        for (Map.Entry<Integer, String> entry : flightMap.entrySet())
-        {
-            if (entry.getValue().equals(flightName))
-            {
-                int flightNumber = entry.getKey();
-                LOGGER.info("Your Flight Number " + flightNumber);
-                new CargoFlight(flightName,flightNumber);
-                cargoFlight.setFlightName(flightName);
-                cargoFlight.setFlightNumber(flightNumber);
-            }
-        }
+        Optional <String> flightNumber = flightMap.entrySet().stream().filter(v -> flightName.equals(v.getValue())).map(e -> String.valueOf(e.getKey())).findFirst();
+        LOGGER.info("Your Flight Number " + flightNumber.get());
+        new CargoFlight(flightName,flightNumber.get());
+        cargoFlight.setFlightName(flightName);
+        cargoFlight.setFlightNumber(Integer.parseInt(flightNumber.get()));
         LOGGER.info("Your Departure City (JFK)");
         travelObj.setDeparture(depCity);
-        LOGGER.info("Enter the Arrival City");
+        LOGGER.info("Enter the Arrival City (RDU/LHR/DBX/LAX/SLC/MCO/IAD/SFO/SEA)");
         String arrCity = myObj7.nextLine();
-        travelObj.setArrival(arrCity);
+        travelObj.setDestinationInfo(DestinationInfo.valueOf(arrCity));
         LOGGER.info("Enter the Cargo Type (General/Special/Hazardous)");
         String cargoType = myObj7.nextLine();
         cargoFlight.setCargoType(cargoType);
@@ -383,36 +403,28 @@ public class Airport implements InformationBoard,Cargo,SecurityChecking,Immigrat
     @Override
     public void isImmigrationCheckCompleted() {
         Scanner myObj9 = new Scanner(System.in);
-        LOGGER.info("Is Domestic/International (D/I) : ");
-        String check = myObj9.nextLine();
-        if (check.matches("D+")) {
-            LOGGER.info("Immigration Not Required! ");
-            LOGGER.info("Please proceed to gate for Boarding.. ");
+        LOGGER.info("Please Enter the Visa Number [US1234]/[88112] ");
+        String visaNumber = myObj9.nextLine();
+        VisaInfo<String> visaUS = new VisaInfo<>();
+        VisaInfo visaEU = new VisaInfo();
+        if (visaNumber.equalsIgnoreCase(visaNumberUS))
+        {
+            visaUS.setVisaid(visaNumber);
+            LOGGER.info("Immigration Completed");
+            LOGGER.info("Please Proceed to Gate for International Boarding.. ");
             LOGGER.info("Have a Safe Journey! ");
-        } else if (check.matches("I+")) {
-            LOGGER.info("Please Enter the Visa Number [US1234]/[88112] ");
-            String visaNumber = myObj9.nextLine();
-            VisaInfo<String> visaUS = new VisaInfo<>();
-            VisaInfo visaEU = new VisaInfo();
-            if (visaNumber.equalsIgnoreCase(visaNumberUS))
-            {
-                visaUS.setVisaid(visaNumber);
-                LOGGER.info("Immigration Completed for US");
-                LOGGER.info("Please Proceed to Gate for International Boarding.. ");
-                LOGGER.info("Have a Safe Journey! ");
-            }
-            else if (visaNumber.equalsIgnoreCase(String.valueOf(visaNumberEU)))
-            {
-                visaEU.setVisaid(visaNumber);
-                LOGGER.info("Immigration Completed for EU ");
-                LOGGER.info("Please Proceed to Gate for International Boarding.. ");
-                LOGGER.info("Have a Safe Journey! ");
-            }
-            else
-            {
-                LOGGER.info("Please proceed to Immigration Office.. ");
-                System.exit(0);
-            }
+        }
+        else if (visaNumber.equalsIgnoreCase(String.valueOf(visaNumberEU)))
+        {
+            visaEU.setVisaid(visaNumber);
+            LOGGER.info("Immigration Completed");
+            LOGGER.info("Please Proceed to Gate for International Boarding.. ");
+            LOGGER.info("Have a Safe Journey! ");
+        }
+        else
+        {
+            LOGGER.info("Please proceed to Immigration Office.. ");
+            System.exit(0);
         }
     }
 }

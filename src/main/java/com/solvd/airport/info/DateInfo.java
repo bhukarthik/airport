@@ -4,5 +4,5 @@ import java.util.Date;
 
 public abstract class DateInfo
 {
-    public abstract Date currentDate();
+    public abstract Date currentDate(Date date);
 }
