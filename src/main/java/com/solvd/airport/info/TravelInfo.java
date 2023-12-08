@@ -1,9 +1,9 @@
 package com.solvd.airport.info;
 
-public class TravelInfo
-{
+public class TravelInfo {
     private String departure;
     private DestinationInfo destinationInfo;
+
     public String getDeparture() {
         return departure;
     }
@@ -16,13 +16,12 @@ public class TravelInfo
         return destinationInfo;
     }
 
-    public void setDestinationInfo(DestinationInfo arrival)
-    {
+    public void setDestinationInfo(DestinationInfo arrival) {
         this.destinationInfo = arrival;
     }
 
     @Override
     public String toString() {
-        return "TravelInfo{"+departure+" : "+destinationInfo+"}";
+        return "TravelInfo{" + departure + " : " + destinationInfo + "}";
     }
 }

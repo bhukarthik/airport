@@ -2,14 +2,13 @@ package com.solvd.airport.flightservice;
 
 import com.solvd.airport.info.SeatInfo;
 
-public class FirstClassSeat extends SeatInfo
-{
+public class FirstClassSeat extends SeatInfo {
     private String mealType;
     private String beverageType;
-    private int NoOfLuggages;
+    private int noOfLuggages;
     private double Weight;
-    public FirstClassSeat(String seatRow, int seatNumber)
-    {
+
+    public FirstClassSeat(String seatRow, int seatNumber) {
         super(seatRow, seatNumber);
     }
 
@@ -28,12 +27,13 @@ public class FirstClassSeat extends SeatInfo
     public void setBeverageType(String beverageType) {
         this.beverageType = beverageType;
     }
+
     public int getNoOfLuggages() {
-        return NoOfLuggages;
+        return noOfLuggages;
     }
 
     public void setNoOfLuggages(int noOfLuggages) {
-        NoOfLuggages = noOfLuggages;
+        noOfLuggages = noOfLuggages;
     }
 
     public double getWeight() {
@@ -46,7 +46,7 @@ public class FirstClassSeat extends SeatInfo
 
     @Override
     public String toString() {
-        return "LuggageInfo{"+NoOfLuggages+" : "+Weight+"}";
+        return "LuggageInfo{" + noOfLuggages + " : " + Weight + "}";
     }
 
 }

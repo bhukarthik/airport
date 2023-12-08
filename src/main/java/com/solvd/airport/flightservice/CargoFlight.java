@@ -2,8 +2,7 @@ package com.solvd.airport.flightservice;
 
 import com.solvd.airport.info.FlightInfo;
 
-public class CargoFlight extends FlightInfo
-{
+public class CargoFlight extends FlightInfo {
     private String cargoType;
     private String supplierName;
     private double weight;
@@ -26,9 +25,11 @@ public class CargoFlight extends FlightInfo
     public String getSupplierName() {
         return supplierName;
     }
+
     public void setSupplierName(String supplierName) {
         this.supplierName = supplierName;
     }
+
     public double getWeight() {
         return weight;
     }

@@ -1,12 +1,10 @@
 package com.solvd.airport.exception;
 
-public class LuggageMatchException extends Exception
-{
-    public LuggageMatchException()
-    {
+public class LuggageMatchException extends Exception {
+    public LuggageMatchException() {
     }
-    public LuggageMatchException(String str)
-    {
+
+    public LuggageMatchException(String str) {
         super(str);
     }
 }

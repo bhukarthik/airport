@@ -1,7 +1,6 @@
 package com.solvd.airport.info;
 
-public class PassInfo
-{
+public class PassInfo {
     private String firstName;
     private String lastName;
     private int age;
@@ -14,6 +13,7 @@ public class PassInfo
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+
     public String getLastName() {
         return this.lastName;
     }
@@ -33,12 +33,13 @@ public class PassInfo
     public void setAge(int age) {
         this.age = age;
     }
+
     public String getGender() {
         return gender;
     }
 
     @Override
     public String toString() {
-        return "PassInfo{"+firstName+ ":" +lastName+ ":" +gender+ ":" +age+"}";
+        return "PassInfo{" + firstName + ":" + lastName + ":" + gender + ":" + age + "}";
     }
 }

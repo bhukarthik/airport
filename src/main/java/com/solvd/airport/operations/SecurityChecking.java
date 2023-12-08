@@ -1,7 +1,6 @@
 package com.solvd.airport.operations;
 
-public interface SecurityChecking
-{
-     public abstract void isSecurityCheckCompleted();
+public interface SecurityChecking {
+    public abstract void isSecurityCheckCompleted();
 
 }

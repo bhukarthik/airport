@@ -5,8 +5,7 @@ import com.solvd.airport.info.DateInfo;
 import java.util.Calendar;
 import java.util.Date;
 
-public class FlightDate extends DateInfo
-{
+public class FlightDate extends DateInfo {
     private Date depatureDate;
     private Date arrivalDate;
 

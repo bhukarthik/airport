@@ -1,7 +1,6 @@
 package com.solvd.airport.info;
 
-public enum DestinationInfo
-{
+public enum DestinationInfo {
     RDU("Raleigh/Durham Airport", "RALEIGH", "USA"),
     LHR("London Heathrow", "LONDON", "UK"),
     DBX("Dubai Airport", "DUBAI", "UAE"),
@@ -16,8 +15,7 @@ public enum DestinationInfo
     private final String code;
     private final String countryOfOrigin;
 
-    DestinationInfo(String airportName, String code, String countryOfOrigin)
-    {
+    DestinationInfo(String airportName, String code, String countryOfOrigin) {
         this.airportName = airportName;
         this.code = code;
         this.countryOfOrigin = countryOfOrigin;
@@ -27,11 +25,11 @@ public enum DestinationInfo
         return this.airportName;
     }
 
-    public String getAirportCode(){
+    public String getAirportCode() {
         return this.code;
     }
 
-    public String getCountryOfOrigin(){
+    public String getCountryOfOrigin() {
         return this.countryOfOrigin;
     }
 }

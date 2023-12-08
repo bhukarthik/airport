@@ -1,14 +1,12 @@
 package com.solvd.airport.info;
 
-public abstract class SeatInfo
-{
+public abstract class SeatInfo {
     private String seatRow;
     private int seatNumber;
 
-    public SeatInfo(String seatRow, int seatNumber)
-    {
-        this.seatRow=seatRow;
-        this.seatNumber=seatNumber;
+    public SeatInfo(String seatRow, int seatNumber) {
+        this.seatRow = seatRow;
+        this.seatNumber = seatNumber;
     }
 
     public String getSeatRow() {
@@ -23,13 +21,12 @@ public abstract class SeatInfo
         return seatNumber;
     }
 
-    public void setSeatNumber(int seatNumber)
-    {
+    public void setSeatNumber(int seatNumber) {
         seatNumber = seatNumber;
     }
 
     @Override
     public String toString() {
-        return "SeatInfo{"+seatRow+" : "+seatNumber+"}";
+        return "SeatInfo{" + seatRow + " : " + seatNumber + "}";
     }
 }
