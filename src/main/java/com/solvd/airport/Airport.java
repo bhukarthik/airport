@@ -147,6 +147,7 @@ public class Airport implements InformationBoard, Cargo, SecurityChecking, Immig
                 LOGGER.info("Departure City :" + travelObj.getDeparture() + " Arrival City :" + travelObj.getArrival());
                 LOGGER.info("Departure Time :" + flightDate.getDepatureDate() + "Arrival Time :" + flightDate.getArrivalDate());
                 LOGGER.info("Seat Row :" + seatObj.getSeatRow() + " Seat Number :" + seatObj.getSeatNumber());
+                LOGGER.info("Meal Type :" + MealInfo.NA + " Beverage Type :" + BeverageInfo.SODA);
                 LOGGER.info("Flight Number :" + flightObj.getFlightName() + " Flight Name :" + flightObj.getFlightNumber());
                 LOGGER.info("Terminal Name :" + myTerminalName + " Gate Number :" + myGateNumber);
                 LOGGER.info("************************************************");
@@ -157,12 +158,27 @@ public class Airport implements InformationBoard, Cargo, SecurityChecking, Immig
                 String seatRow = myObj4.nextLine();
                 LOGGER.info("Enter the Seat Number");
                 int seatNumber = myObj4.nextInt();
-                LOGGER.info("Enter the Meal Type [VG/NVG/CHM/BG]");
+                LOGGER.info("Enter the Meal Type [VG/NVG]");
                 String mealType = myObj3.nextLine();
-                LOGGER.info("Enter the Beverage Type [WATER/TEA/COFFEE/SODA]");
+                LOGGER.info("Enter the Beverage Type [WATER/SODA]");
                 String bevType = myObj3.nextLine();
                 BusinessSeat businessSeat = new BusinessSeat(seatRow, seatNumber);
-                businessSeat.setMealType(MealInfo.valueOf(mealType));
+                if(mealType.contains("VG")&& mealType.contains("NVG"))
+                {
+                    businessSeat.setMealType(MealInfo.valueOf(mealType));
+                }
+                else
+                {
+                    businessSeat.setMealType(MealInfo.NA);
+                }
+                if(bevType.contains("WATER")&& mealType.contains("SODA"))
+                {
+                    businessSeat.setBeverageType(BeverageInfo.valueOf(bevType));
+                }
+                else
+                {
+                    businessSeat.setBeverageType(BeverageInfo.NA);
+                }
                 businessSeat.setBeverageType(BeverageInfo.valueOf(bevType));
                 LOGGER.info("******** Your Boarding Pass *********");
                 LOGGER.info("********" + flightDate.currentDate(new Date()) + "*********");
@@ -184,9 +200,9 @@ public class Airport implements InformationBoard, Cargo, SecurityChecking, Immig
                 int seatNumber = myObj5.nextInt();
                 FirstClassSeat firstClassSeat = new FirstClassSeat(seatRow, seatNumber);
                 Scanner myObj9 = new Scanner(System.in);
-                LOGGER.info("Enter the Meal Type [Veg/NV/Vegan]");
+                LOGGER.info("Enter the Meal Type [VG/NVG/CHM/BG]");
                 String mealType = myObj9.nextLine();
-                LOGGER.info("Enter the Beverage Type [Hot/Cold]");
+                LOGGER.info("Enter the Beverage Type [WATER/SODA/TEA/COFFEE]");
                 String bevType = myObj9.nextLine();
                 firstClassSeat.setMealType(mealType);
                 firstClassSeat.setBeverageType(bevType);
@@ -228,7 +244,7 @@ public class Airport implements InformationBoard, Cargo, SecurityChecking, Immig
                 LOGGER.info("Flight Number :" + flightObj.getFlightName() + " Flight Name :" + flightObj.getFlightNumber());
                 LOGGER.info("Seat Row :" + firstClassSeat.getSeatRow() + " Seat Number :" + firstClassSeat.getSeatNumber());
                 LOGGER.info("Terminal Name :" + myTerminalName + " Gate Number :" + myGateNumber);
-                LOGGER.info("Meal Type :" + firstClassSeat.getMealType() + " Beverage Type :" + firstClassSeat.getBeverageType());
+                LOGGER.info("Meal Type :" + MealInfo.valueOf(mealType) + " Beverage Type :" + BeverageInfo.valueOf(bevType));
                 LOGGER.info("Number of Luggage :" + firstClassSeat.getNoOfLuggages() + " Weight :" + firstClassSeat.getWeight());
                 LOGGER.info("************************************************");
             }

@@ -1,35 +1,36 @@
 package com.solvd.connection;
 
-public class ConnectionMain extends Thread {
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 
-    private Thread connID;
+public class ConnectionMain extends Thread {
+    private static final Logger LOGGER = (Logger) LogManager.getLogger(ConnectionMain.class);
+
     private String connName;
 
     public ConnectionMain(String connName) {
         this.connName = connName;
-        System.out.println("Creating Thread:" + connName);
+        LOGGER.info("Creating Thread:" + connName);
     }
 
     public void run() {
         ConnectionPool connectionPool = ConnectionPool.getInstance();
         Connection connection = connectionPool.getConnection();
-        int timer = 0;
-        while (connection == null && timer < 6000) {
+        int timer = 1000;
+        while (!connection.getName().isEmpty() && timer <4000) {
             try {
                 Thread.sleep(1000);
-                connection = connectionPool.getConnection();
+                connectionPool.releaseConnection(connection);
                 timer += 1000;
+                LOGGER.info("Release Connection "+connection.getName());
+
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        }
-    }
-
-    public void start() {
-        System.out.println("Starting Thread");
-        if (connID == null) {
-            connID = new Thread(this, connName);
-            connID.start();
+            finally {
+                connection = connectionPool.getConnection();
+                LOGGER.info("Create Connection "+connection.getName());
+            }
         }
     }
 }

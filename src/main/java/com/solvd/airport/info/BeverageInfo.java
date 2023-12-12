@@ -1,6 +1,7 @@
 package com.solvd.airport.info;
 
 public enum BeverageInfo {
+    NA("NOT AVAILABLE", "NOT_AVL"),
     WATER("Water", "WAT"),
     TEA("TEA", "TA"),
     SODA("COKE", "SD"),

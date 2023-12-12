@@ -6,7 +6,7 @@ public class FirstClassSeat extends SeatInfo {
     private String mealType;
     private String beverageType;
     private int noOfLuggages;
-    private double Weight;
+    private double weight;
 
     public FirstClassSeat(String seatRow, int seatNumber) {
         super(seatRow, seatNumber);
@@ -37,16 +37,16 @@ public class FirstClassSeat extends SeatInfo {
     }
 
     public double getWeight() {
-        return Weight;
+        return weight;
     }
 
     public void setWeight(double weight) {
-        Weight = weight;
+        weight = weight;
     }
 
     @Override
     public String toString() {
-        return "LuggageInfo{" + noOfLuggages + " : " + Weight + "}";
+        return "LuggageInfo{" + noOfLuggages + " : " + weight + "}";
     }
 
 }
